@@ -1,5 +1,8 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "matrix_lib.h"
+
 
 
 /*PARTE 1*/
@@ -7,14 +10,14 @@
 produto do valor escalar pela matriz. O resultado da operação deve ser retornado na matriz
 de entrada. Em caso de sucesso, a função deve retornar o valor 1. Em caso de erro, a
 função deve retornar 0.*/
-int scalar_matrix_mult(float scalar_value, struct matrix *matrix){
+int scalar_matrix_mult(float scalar_value, Matrix *matrix){
 	if (matrix == NULL){
 		printf("Erro: Matriz não declarada.");
 		return 0;
 	}
-	for ( i=0;i<matrix->height;i++){
-		for( j=0;j<matrix->height;j++){
-			matrix->row[i*matrix->width+j]*=scalar_value;
+	for ( int i=0;i<matrix->height;i++){
+		for( int j=0;j<matrix->height;j++){
+			matrix->rows[i*matrix->width+j]*=scalar_value;
 		}
 	}
 	return 1;
@@ -24,7 +27,7 @@ int scalar_matrix_mult(float scalar_value, struct matrix *matrix){
 /*Essa função recebe 3 matrizes como argumentos de entrada e calcula o valor do produto da
 matriz A pela matriz B. O resultado da operação deve ser retornado na matriz C. Em caso
 de sucesso, a função deve retornar o valor 1. Em caso de erro, a função deve retornar 0.*/
-int matrix_matrix_mult(struct matrix *matrixA, struct matrix * matrixB, struct matrix * matrixC){
+int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
 	if(matrixA == NULL || matrixB == NULL || matrixC ==NULL){
 		printf("Erro: Uma ou mais matrizes não declaradas.");
 	}

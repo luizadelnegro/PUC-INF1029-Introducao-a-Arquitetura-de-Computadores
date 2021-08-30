@@ -2,22 +2,21 @@
 #include <stdlib.h>
 #include "matrix_lib.h"
 #include <string.h>
-#include "timer.h" 
 
 
-Matrix * fillEmptyMatrix(Matrix *matrix){
+void fillEmptyMatrix(Matrix *matrix){
 	if (matrix == NULL){
 		printf("Erro: Matriz não declarada.");
-		return 0;
+		return ;
 	}
 	unsigned long int mH = matrix->height;
 	unsigned long int mW = matrix->width;
-	for(int i=0;i<m; i++){
-		for(int j=0; j<n; j++){
-			matrix->rows[i*n + j] = 0.0;
+	for(int i=0;i<mH; i++){
+		for(int j=0; j<mW; j++){
+			matrix->rows[i*mW + j] = 0.0;
 		}
 	}
-	return matrix;
+	return ;
 }
 
 
@@ -64,36 +63,42 @@ void writeMatrixResult(Matrix matrix, char*filename){
 
 
 int main(int argc, char *argv[]){
-	Matrix mA, mB, mC;
-	float scalar = atof(argv[1]);
 
-	/*INITIALIZE A*/
+	float scalar = atof(argv[1]);
+	/*MATRIX*/
 	unsigned long int linesForA = atoi(argv[2]);
 	unsigned long int columnsForA = atoi(argv[3]);
-	char* matrixAFile = argv[6];
-	mA->height=linesForA;
-	mA->width=columnsForA;
-	mA->rows=(float*)malloc(mA.height*mA.width*sizeof(float));
-	fillMatrixWtihFile(mA,matrixAFile);
-
-	/*INITIALIZE B*/
 	unsigned long int linesForB = atoi(argv[4]);
 	unsigned long int columnsForB = atoi(argv[5]);
+	char* matrixAFile = argv[6];
 	char* matrixBFile = argv[7];
-	mB->height=linesForB;
-	mB->width=columnsForB;
-	mB->rows=(float*)malloc(mB.height*mB.width*sizeof(float));
-	fillMatrixWithFile(mB,matrixBFile);
-
-	/*INITIALZE C*/
-	mC->height=linesForA;
-	mC->width=columnsForB;
-	mC->rows=(float*)malloc(mC.height*mC.width*sizeof(float));
-	fillEmptyMatrix(&mC);
 
 	/*RESULTS*/
 	char* firstResult = argv[8];
 	char* secondResult = argv[9];
+	
+	Matrix mA;
+	Matrix mB;
+	Matrix mC;
+
+	/*INITIALIZE A*/
+	mA.height=linesForA;
+	mA.width=columnsForA;
+	mA.rows=(float*)malloc(mA.height*mA.width*sizeof(float));
+	fillMatrixWithFile(mA,matrixAFile);
+
+	/*INITIALIZE B*/
+	mB.height=linesForB;
+	mB.width=columnsForB;
+	mB.rows=(float*)malloc(mB.height*mB.width*sizeof(float));
+	fillMatrixWithFile(mB,matrixBFile);
+
+	/*INITIALZE C*/
+	mC.height=linesForA;
+	mC.width=columnsForB;
+	mC.rows=(float*)malloc(mC.height*mC.width*sizeof(float));
+	fillEmptyMatrix(&mC);
+
 
 
 
@@ -109,7 +114,7 @@ int main(int argc, char *argv[]){
 	/*Matrix Multiplication*/
 	printf("\n Matrix multiplication of Matrix A and Matrix B");
 	matrix_matrix_mult(&mA,&mB,&mC);
-	writeMatrixResult(mC,secondResult)
+	writeMatrixResult(mC,secondResult);
 
 	return 0;
 }
