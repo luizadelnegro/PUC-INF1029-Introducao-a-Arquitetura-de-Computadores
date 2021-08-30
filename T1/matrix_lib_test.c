@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "matrix_lib.h"
 #include <string.h>
+#include "timer.h"
 
 /*PARTE 2*/
 /*
@@ -96,6 +97,11 @@ int main(int argc, char *argv[]){
 
 	*/
 
+	/*TIME*/
+	struct timeval start, stop, startOverall, stopOverall;
+	gettimeofday(&startOverall, NULL);
+
+
 	float scalar = atof(argv[1]);
 	/*MATRIX*/
 	unsigned long int linesForA = atoi(argv[2]);
@@ -118,7 +124,7 @@ int main(int argc, char *argv[]){
 	mA.width=columnsForA;
 	mA.rows=(float*)malloc(mA.height*mA.width*sizeof(float));
 	fillMatrixWithFile(mA,matrixAFile);
-	printf("\n Matrix A \n");
+	//printf("\n Matrix A \n");
 	//showMatrix(mA);
 
 	/*INITIALIZE B*/
@@ -126,7 +132,7 @@ int main(int argc, char *argv[]){
 	mB.width=columnsForB;
 	mB.rows=(float*)malloc(mB.height*mB.width*sizeof(float));
 	fillMatrixWithFile(mB,matrixBFile);
-	printf("\n Matrix B \n");
+	//printf("\n Matrix B \n");
 	//showMatrix(mB);
 
 	/*INITIALZE C*/
@@ -134,16 +140,18 @@ int main(int argc, char *argv[]){
 	mC.width=columnsForB;
 	mC.rows=(float*)malloc(mC.height*mC.width*sizeof(float));
 	fillEmptyMatrix(&mC);
-	printf("\n Matrix C Vazia \n");
+	//printf("\n Matrix C Vazia \n");
 	//showMatrix(mC);
 
 
 
 	/*SCALAR OF A*/
-	printf("\n Scalar multiplication of Matrix A");
+	//printf("\n Scalar multiplication of Matrix A");
+	gettimeofday(&start, NULL);
 	scalar_matrix_mult(scalar,&mA);
+	gettimeofday(&stop, NULL);
 	writeMatrixResult(mA,firstResult);
-	printf("\n Matrix A \n");
+	printf("\n Time difference of scalar multiplicaton of Matrix A: %f ms\n",timedifference_msec(start, stop));
 	//showMatrix(mA);
 
 	/*SCALAR OF B*/
@@ -151,12 +159,17 @@ int main(int argc, char *argv[]){
 	//scalar_matrix_mult(scalar,&mB);
 
 	/*Matrix Multiplication*/
-	printf("\n Matrix multiplication of Matrix A and Matrix B");
+	//printf("\n Matrix multiplication of Matrix A and Matrix B");
+	gettimeofday(&start, NULL);
 	matrix_matrix_mult(&mA,&mB,&mC);
+	gettimeofday(&stop, NULL);
+	printf("\n Time difference of multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
+	
 	//printf("\n Matrix AxB=C  \n");
-	showMatrix(mC);
+	//showMatrix(mC);
 	writeMatrixResult(mC,secondResult);
 
-
+	gettimeofday(&stopOverall, NULL);
+	printf("Overall time: %f ms\n", timedifference_msec(startOverall, stopOverall));
 	return 0;
 }
