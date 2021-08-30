@@ -2,20 +2,6 @@
 #include "matrix_lib.h"
 
 
-
-Matrix * create_matrix(int matrix_height, int matrix_width){
-	return;
-}
-
-int fill_matrix(float value, Matrix * matrix){
-	return;
-}
-
-int show_matrix(Matrix * matrix, char * name){
-
-}
-
-
 /*PARTE 1*/
 /*Essa função recebe um valor escalar e uma matriz como argumentos de entrada e calcula o
 produto do valor escalar pela matriz. O resultado da operação deve ser retornado na matriz
@@ -55,15 +41,18 @@ int matrix_matrix_mult(struct matrix *matrixA, struct matrix * matrixB, struct m
 			float aux=0;
 			//c=a*b
 			for(int iteracoes=0 ; iteracoes<matrixA->width;iteracoes++){
-				float aux_AtoC = matrixA->rows[i*matrixA->width+iteracoes];
+				float aux_AtoC = matrixA->rows[i*(matrixA->width)+iteracoes];
 
-				float aux_BtoC = matrixB->rows[iteracoes*matrixB->width+j];
+				float aux_BtoC = matrixB->rows[iteracoes*(matrixB->width)+j];
 			
 				aux+=aux_AtoC*aux_BtoC;
 			}
-			matrixC->rows[i*matrixC->width+j]=aux;
+			matrixC->rows[i*(matrixC->width)+j]=aux;
 
 		}
 	}
 	return 1;
 }
+
+
+

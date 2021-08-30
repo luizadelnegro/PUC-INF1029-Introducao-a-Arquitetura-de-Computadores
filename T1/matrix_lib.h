@@ -9,8 +9,5 @@ float *rows; //sequência de linhas da matriz (height*width elementos)
 } Matrix;
 
 
-Matrix * create_matrix(int matrix_height, int matrix_width);
-int fill_matrix(float value, Matrix * matrix);
-int show_matrix(Matrix * matrix, char * name);
 int scalar_matrix_mult(float scalar_value, struct matrix *matrix);
 int matrix_matrix_mult(struct matrix *matrixA, struct matrix * matrixB, struct matrix * matrixC);
