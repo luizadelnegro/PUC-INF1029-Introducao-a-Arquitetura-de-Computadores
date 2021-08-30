@@ -17,7 +17,7 @@ int scalar_matrix_mult(float scalar_value, Matrix *matrix){
 	}
 	for ( int i=0;i<matrix->height;i++){
 		for( int j=0;j<matrix->height;j++){
-			matrix->rows[i*matrix->width+j]*=scalar_value;
+			matrix->rows[i*(matrix->width)+j]*=scalar_value;
 		}
 	}
 	return 1;
@@ -27,33 +27,36 @@ int scalar_matrix_mult(float scalar_value, Matrix *matrix){
 /*Essa função recebe 3 matrizes como argumentos de entrada e calcula o valor do produto da
 matriz A pela matriz B. O resultado da operação deve ser retornado na matriz C. Em caso
 de sucesso, a função deve retornar o valor 1. Em caso de erro, a função deve retornar 0.*/
+
 int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
+	
 	if(matrixA == NULL || matrixB == NULL || matrixC ==NULL){
 		printf("Erro: Uma ou mais matrizes não declaradas.");
+		return 0;
 	}
-	return 0;
+
 	//check size
 	if(matrixA->width != matrixB->height){
 		printf("Erro: Matriz A precisa ter a mesma largura da altura da matriz B.");
 		return 0;
 	}
-//tamanho do somatorio de mult de elementos de A com B = matrixA width
+	float aux=0;
+	
+	for(int i=0;i<matrixA->height;i++){
+		for(int j=0;j<matrixB->width;j++){
+			for(int k=0 ; k<matrixA->width;k++){
+				//c=a*b
+				float aux_AtoC = matrixA->rows[i*(matrixA->width)+j];
 
-	for(int i=0;i<matrixC->height;i++){
-		for(int j=0;j<matrixC->width;j++){
-			float aux=0;
-			//c=a*b
-			for(int iteracoes=0 ; iteracoes<matrixA->width;iteracoes++){
-				float aux_AtoC = matrixA->rows[i*(matrixA->width)+iteracoes];
-
-				float aux_BtoC = matrixB->rows[iteracoes*(matrixB->width)+j];
-			
-				aux+=aux_AtoC*aux_BtoC;
+				float aux_BtoC = matrixB->rows[j*(matrixB->width)+k];
+		
+				aux=aux_AtoC*aux_BtoC;
 			}
 			matrixC->rows[i*(matrixC->width)+j]=aux;
 
 		}
 	}
+	
 	return 1;
 }
 
