@@ -60,7 +60,6 @@ void writeMatrixResult(Matrix matrix, char*filename){
     }
 	
     fwrite (&matrix.width, sizeof(unsigned long int), 1, file);
-	fwrite (&matrix.height, sizeof(unsigned long int), 1, file);
 
 	for(int i=0;i<matrix.height; i++){
 		for(int j=0; j<matrix.width; j++){
@@ -80,7 +79,7 @@ void showMatrix(Matrix matrix){
 	printf("[ ");
 	for(int i=0;i<mH; i++){
 		for(int j=0; j<mW; j++){
-			printf(" %f ",matrix.rows[i*mW + j]);
+			printf(" %.1f ",matrix.rows[i*mW + j]);
 		}
 		printf("\n");
 	}
@@ -88,6 +87,10 @@ void showMatrix(Matrix matrix){
 
 
 }
+
+
+
+
 
 
 int main(int argc, char *argv[]){
@@ -146,7 +149,7 @@ int main(int argc, char *argv[]){
 
 
 	/*SCALAR OF A*/
-	//printf("\n Scalar multiplication of Matrix A");
+	printf("\n Scalar multiplication of Matrix A \n");
 	gettimeofday(&start, NULL);
 	scalar_matrix_mult(scalar,&mA);
 	gettimeofday(&stop, NULL);
@@ -159,14 +162,14 @@ int main(int argc, char *argv[]){
 	//scalar_matrix_mult(scalar,&mB);
 
 	/*Matrix Multiplication*/
-	//printf("\n Matrix multiplication of Matrix A and Matrix B");
+	printf("\n Matrix multiplication of Matrix A and Matrix B\n");
 	gettimeofday(&start, NULL);
 	matrix_matrix_mult(&mA,&mB,&mC);
 	gettimeofday(&stop, NULL);
 	printf("\n Time difference of multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
 	
-	//printf("\n Matrix AxB=C  \n");
-	//showMatrix(mC);
+	printf("\n Matrix AxB=C  \n");
+	showMatrix(mC);
 	writeMatrixResult(mC,secondResult);
 
 	gettimeofday(&stopOverall, NULL);

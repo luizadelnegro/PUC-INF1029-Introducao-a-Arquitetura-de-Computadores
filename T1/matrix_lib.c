@@ -15,11 +15,16 @@ int scalar_matrix_mult(float scalar_value, Matrix *matrix){
 		printf("Erro: Matriz não declarada.");
 		return 0;
 	}
-	for ( int i=0;i<matrix->height;i++){
+	int max=matrix->width*matrix->height;
+	for(int i=0;i<max;i++){
+		matrix->rows[i]=matrix->rows[i]*scalar_value;
+	}
+/*	for ( int i=0;i<matrix->height;i++){
 		for( int j=0;j<matrix->height;j++){
 			matrix->rows[i*(matrix->width)+j]*=scalar_value;
+
 		}
-	}
+	}*/
 	return 1;
 }
 
@@ -37,28 +42,39 @@ int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
 
 	//check size
 	if(matrixA->width != matrixB->height){
-		printf("Erro: Matriz A precisa ter a mesma largura da altura da matriz B.");
+		printf("Erro: A largura da matriz A precisa ser igual a altura da matriz B.");
 		return 0;
 	}
-	float aux=0;
 	
-	for(int i=0;i<matrixA->height;i++){
-		for(int j=0;j<matrixB->width;j++){
-			for(int k=0 ; k<matrixA->width;k++){
+	for(int i=0 ; i<matrixA->height ; i++){
+		for(int j=0 ; j<matrixB->width ; j++){
+			int aux=0;
+			for(int k=0 ; k<matrixA->width ; k++){
 				//c=a*b
 				float aux_AtoC = matrixA->rows[i*(matrixA->width)+j];
-
 				float aux_BtoC = matrixB->rows[j*(matrixB->width)+k];
 		
-				aux=aux_AtoC*aux_BtoC;
+				aux+=aux_AtoC*aux_BtoC;
 			}
 			matrixC->rows[i*(matrixC->width)+j]=aux;
-
 		}
 	}
 	
 	return 1;
 }
 
+/*NOVA MM*/
+int nova_matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
+	if(matrixA == NULL || matrixB == NULL || matrixC ==NULL){
+		printf("Erro: Uma ou mais matrizes não declaradas.");
+		return 0;
+	}
 
+	//check size
+	if(matrixA->width != matrixB->height){
+		printf("Erro: A largura da matriz A precisa ser igual a altura da matriz B.");
+		return 0;
+	}
 
+	return 1;
+}

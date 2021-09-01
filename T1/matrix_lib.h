@@ -6,3 +6,4 @@ float *rows; //sequência de linhas da matriz (height*width elementos)
 
 int scalar_matrix_mult(float scalar_value, Matrix *matrix);
 int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC);
+int nova_matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC);
