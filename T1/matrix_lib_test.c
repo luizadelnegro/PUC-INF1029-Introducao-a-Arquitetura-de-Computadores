@@ -36,7 +36,8 @@ void fillMatrixWithFile(Matrix matrix, char* filename){
 	FILE *file;
 	file = fopen (filename, "rb"); 
     if (file == NULL) { 
-        fprintf(stderr, " - Erro: problema ao abrir arquivo\n"); 
+        fprintf(stderr, " - Erro: problema ao abrir arquivo \n"); 
+
         exit (1); 
     }
 
@@ -98,6 +99,12 @@ int main(int argc, char *argv[]){
 	gcc -Wall -o test matrix_lib.c matrix_lib.h matrix_lib_test.c
 	./test 5.0 8 16 16 8 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
 
+
+gcc -Wall -o test matrix_lib_test.c matrix_lib.c timer.c 
+./test 5.0 1024 1024 1024 1024 8 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
+
+
+
 	*/
 
 	/*TIME*/
@@ -149,7 +156,7 @@ int main(int argc, char *argv[]){
 
 
 	/*SCALAR OF A*/
-	printf("\n Scalar multiplication of Matrix A \n");
+	//printf("\n Scalar multiplication of Matrix A \n");
 	gettimeofday(&start, NULL);
 	scalar_matrix_mult(scalar,&mA);
 	gettimeofday(&stop, NULL);
@@ -162,15 +169,24 @@ int main(int argc, char *argv[]){
 	//scalar_matrix_mult(scalar,&mB);
 
 	/*Matrix Multiplication*/
-	printf("\n Matrix multiplication of Matrix A and Matrix B\n");
+	//printf("\n Matrix multiplication of Matrix A and Matrix B\n");
 	gettimeofday(&start, NULL);
 	matrix_matrix_mult(&mA,&mB,&mC);
 	gettimeofday(&stop, NULL);
 	printf("\n Time difference of multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
 	
-	printf("\n Matrix AxB=C  \n");
-	showMatrix(mC);
+	//printf("\n  Matrix AxB=C  \n");
+	//showMatrix(mC);
 	writeMatrixResult(mC,secondResult);
+
+
+	//printf("\n Optimized matrix multiplication of Matrix A and Matrix B\n");
+	gettimeofday(&start,NULL);
+	nova_matrix_matrix_mult(&mA,&mB,&mC);
+	gettimeofday(&stop,NULL);
+	printf("\n Time difference of the optimized multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
+	
+
 
 	gettimeofday(&stopOverall, NULL);
 	printf("Overall time: %f ms\n", timedifference_msec(startOverall, stopOverall));

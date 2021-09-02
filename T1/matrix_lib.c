@@ -75,6 +75,17 @@ int nova_matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC)
 		printf("Erro: A largura da matriz A precisa ser igual a altura da matriz B.");
 		return 0;
 	}
+	/*TO DO*/
+	for(int i=0 ; i<matrixA->height ; i++){
+		for(int j=0 ; j<matrixB->width ; j++){
+			float aux=matrixA->rows[i*matrixA->width+j];
+			for(int k=0;k<matrixB->width;k++){
+				matrixC->rows[i*matrixC->width+k]+=(aux*matrixB->rows[j+matrixB->width+k]);
+			}
+
+		}
+	}
+
 
 	return 1;
 }

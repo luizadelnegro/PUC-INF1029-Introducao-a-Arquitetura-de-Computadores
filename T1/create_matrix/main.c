@@ -36,7 +36,10 @@ void fillMatrixWithFile(Matrix matrix, char* filename, int h, int w){
         fprintf(stderr, " - Erro: problema ao abrir arquivo\n"); 
         exit (1); 
     }
-
+    float aux1;
+    float aux2;
+    fread (&aux1, sizeof(float), 1, file);
+    fread (&aux2, sizeof(float), 1, file);
     for(int i=0;i<h; i++){
 		for(int j=0; j<w; j++){
 			fread (&matrix.rows[i*matrix.width + j], sizeof(float), 1, file);
@@ -55,6 +58,8 @@ void newMatrix(char * filename,float num,int height,int width){
         exit (1); 
     }
 
+	fwrite (&height, sizeof(float), 1, file);
+	fwrite (&width, sizeof(float), 1, file);
 	for(int i=0;i<height; i++){
 		for(int j=0;j<width; j++){
 			fwrite (&num, sizeof(float), 1, file);
