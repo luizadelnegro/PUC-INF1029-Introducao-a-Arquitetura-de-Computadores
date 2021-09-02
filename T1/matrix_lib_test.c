@@ -96,14 +96,13 @@ void showMatrix(Matrix matrix){
 
 int main(int argc, char *argv[]){
 	/*
+	Como rodar:
 	gcc -Wall -o test matrix_lib.c matrix_lib.h matrix_lib_test.c
 	./test 5.0 8 16 16 8 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
 
 
-gcc -Wall -o test matrix_lib_test.c matrix_lib.c timer.c 
-./test 5.0 1024 1024 1024 1024 8 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
-
-
+	gcc -Wall -o test matrix_lib_test.c matrix_lib.c matrix_lib.h timer.c timer.h
+	./test 5.0 1024 1024 1024 1024 8 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
 
 	*/
 
@@ -134,60 +133,39 @@ gcc -Wall -o test matrix_lib_test.c matrix_lib.c timer.c
 	mA.width=columnsForA;
 	mA.rows=(float*)malloc(mA.height*mA.width*sizeof(float));
 	fillMatrixWithFile(mA,matrixAFile);
-	//printf("\n Matrix A \n");
-	//showMatrix(mA);
 
 	/*INITIALIZE B*/
 	mB.height=linesForB;
 	mB.width=columnsForB;
 	mB.rows=(float*)malloc(mB.height*mB.width*sizeof(float));
 	fillMatrixWithFile(mB,matrixBFile);
-	//printf("\n Matrix B \n");
-	//showMatrix(mB);
 
 	/*INITIALZE C*/
 	mC.height=linesForA;
 	mC.width=columnsForB;
 	mC.rows=(float*)malloc(mC.height*mC.width*sizeof(float));
 	fillEmptyMatrix(&mC);
-	//printf("\n Matrix C Vazia \n");
-	//showMatrix(mC);
-
-
 
 	/*SCALAR OF A*/
-	//printf("\n Scalar multiplication of Matrix A \n");
 	gettimeofday(&start, NULL);
 	scalar_matrix_mult(scalar,&mA);
 	gettimeofday(&stop, NULL);
 	writeMatrixResult(mA,firstResult);
 	printf("\n Time difference of scalar multiplicaton of Matrix A: %f ms\n",timedifference_msec(start, stop));
-	//showMatrix(mA);
-
-	/*SCALAR OF B*/
-	//printf("\n Scalar multiplication of Matrix B");
-	//scalar_matrix_mult(scalar,&mB);
 
 	/*Matrix Multiplication*/
-	//printf("\n Matrix multiplication of Matrix A and Matrix B\n");
 	gettimeofday(&start, NULL);
 	matrix_matrix_mult(&mA,&mB,&mC);
 	gettimeofday(&stop, NULL);
 	printf("\n Time difference of multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
-	
-	//printf("\n  Matrix AxB=C  \n");
-	//showMatrix(mC);
 	writeMatrixResult(mC,secondResult);
 
-
-	//printf("\n Optimized matrix multiplication of Matrix A and Matrix B\n");
+	/*Optimized Matrix Multiplication*/
 	gettimeofday(&start,NULL);
 	nova_matrix_matrix_mult(&mA,&mB,&mC);
 	gettimeofday(&stop,NULL);
 	printf("\n Time difference of the optimized multiplicaton of Matrix A and Matrix B: %f ms\n",timedifference_msec(start, stop));
 	
-
-
 	gettimeofday(&stopOverall, NULL);
 	printf("Overall time: %f ms\n", timedifference_msec(startOverall, stopOverall));
 	return 0;

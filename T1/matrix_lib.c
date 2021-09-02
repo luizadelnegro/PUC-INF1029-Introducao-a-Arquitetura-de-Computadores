@@ -39,13 +39,10 @@ int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
 		printf("Erro: Uma ou mais matrizes não declaradas.");
 		return 0;
 	}
-
-	//check size
 	if(matrixA->width != matrixB->height){
 		printf("Erro: A largura da matriz A precisa ser igual a altura da matriz B.");
 		return 0;
 	}
-	
 	for(int i=0 ; i<matrixA->height ; i++){
 		for(int j=0 ; j<matrixB->width ; j++){
 			int aux=0;
@@ -59,23 +56,22 @@ int matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
 			matrixC->rows[i*(matrixC->width)+j]=aux;
 		}
 	}
-	
 	return 1;
 }
 
-/*NOVA MM*/
+/*Função otimizada de multiplicação de matrizes - ao invés de ler linha x coluna como a versão acima, 
+utiliza uma variavel auxiliar para multiplicar o elemento correspondente de A com todos os elementos
+ correspondentes da matriz B para essa multiplicação
+*/
 int nova_matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC){
 	if(matrixA == NULL || matrixB == NULL || matrixC ==NULL){
 		printf("Erro: Uma ou mais matrizes não declaradas.");
 		return 0;
 	}
-
-	//check size
 	if(matrixA->width != matrixB->height){
 		printf("Erro: A largura da matriz A precisa ser igual a altura da matriz B.");
 		return 0;
 	}
-	/*TO DO*/
 	for(int i=0 ; i<matrixA->height ; i++){
 		for(int j=0 ; j<matrixB->width ; j++){
 			float aux=matrixA->rows[i*matrixA->width+j];
@@ -85,7 +81,5 @@ int nova_matrix_matrix_mult(Matrix *matrixA, Matrix * matrixB, Matrix * matrixC)
 
 		}
 	}
-
-
 	return 1;
 }
