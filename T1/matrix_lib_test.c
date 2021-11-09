@@ -132,7 +132,10 @@ int main(int argc, char *argv[]){
 	mA.height=linesForA;
 	mA.width=columnsForA;
 	mA.rows=(float*)malloc(mA.height*mA.width*sizeof(float));
+	gettimeofday(&start, NULL);
 	fillMatrixWithFile(mA,matrixAFile);
+	gettimeofday(&stop, NULL);
+	printf("\n Time difference of filling Matrix A with file: %f ms\n",timedifference_msec(start, stop));
 
 	/*INITIALIZE B*/
 	mB.height=linesForB;
@@ -144,7 +147,10 @@ int main(int argc, char *argv[]){
 	mC.height=linesForA;
 	mC.width=columnsForB;
 	mC.rows=(float*)malloc(mC.height*mC.width*sizeof(float));
+	gettimeofday(&start, NULL);
 	fillEmptyMatrix(&mC);
+	gettimeofday(&stop, NULL);
+	printf("\n Time difference of filling Matrix C with 0: %f ms\n",timedifference_msec(start, stop));
 
 	/*SCALAR OF A*/
 	gettimeofday(&start, NULL);

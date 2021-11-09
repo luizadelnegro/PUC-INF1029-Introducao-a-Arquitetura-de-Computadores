@@ -1,0 +1,23 @@
+Aluna:Luiza Del Negro Ciuffo Fernandes 
+Matrícula 1721251
+
+Nesse documento estão os resultados de tempo para:
+- Resultado para multiplcação de matriz A (1024x1024) com ecalar 5
+- Resultado para multiplicação de matriz A(1024x1024) com matriz B (1024x1024) versão não otimizada
+- Resultado para multiplicação de matriz A(1024x1024) com matriz B (1024x1024) versão otimizada
+- Tempo total
+
+comandos utilizados:
+gcc -Wall -o test matrix_lib.c matrix_lib.h matrix_lib_test.c timer.h timer.c
+
+./test 5.0 1024 1024 1024 1024 floats_256_2.0f.dat floats_256_5.0f.dat result1.dat result2.dat
+
+Resultado:
+
+ Time difference of scalar multiplicaton of Matrix A: 7.222000 ms
+
+ Time difference of multiplicaton of Matrix A and Matrix B: 6352.070801 ms
+
+ Time difference of the optimized multiplicaton of Matrix A and Matrix B: 4487.888184 ms
+Overall time: 10907.996094 ms
+
