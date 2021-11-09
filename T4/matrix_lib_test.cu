@@ -133,17 +133,16 @@ int main(int argc, char *argv[]){
 	set_grid_size(num_threads, max_blocks);
 	
 
-    /*INITIALIZE MATRIX*/
+    /*DECLARE MATRIX*/
     Matrix matrix_a;
 	Matrix matrix_b;
 	Matrix matrix_c;
-    Matrix matrix_d;
-    Matrix matrix_e;
+
 
     /*OBSERVACAO 2 - As matrizes A, B e C devem ser alocadas simultaneamente e por completo na memória da GPGPU 
 NVIDIA Tesla C2075 que tem 5GB de memória disponível. Se não for viável fazer a alocação, o 
 programa principal deve emitir uma notificação de erro de alocação de memória para o usuário. */
-	/*INITIALIZE A 16-8*/ 
+	/*INITIALIZE A */ 
 	matrix_a.height=lines_for_a;
 	matrix_a.width=columns_for_a;
 	matrix_a.h_rows = (float*)aligned_alloc(32,matrix_a.height*matrix_a.width*sizeof(float));
@@ -164,12 +163,10 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 	}
 
 
-    /*INITIALIZE B 16-8*/
+    /*INITIALIZE B*/
 	matrix_b.height = lines_for_b;
 	matrix_b.width = columns_for_b;
-
 	matrix_b.h_rows = (float*)aligned_alloc(32,matrix_b.height*matrix_b.width*sizeof(float));
-
 	cuda_error = cudaMalloc(&B.d_rows, B.height*B.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix B - codigo %d\n", cudaGetErrorString(cuda_error), cuda_error);
@@ -185,7 +182,7 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 			return 1;
 	}
 
-    /*INITIALZE C 16-8*/
+    /*INITIALZE C */
 	matrix_c.height = lines_for_a;
 	matrix_c.width = columns_for_b; 
 	matrix_c.h_rows = (float*)aligned_alloc(32,matrix_c.height*matrix_c.width*sizeof(float));
@@ -193,28 +190,6 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 	cuda_error = cudaMalloc(&matrix_c.d_rows, matrix_c.height*matrix_c.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix C - codigo: %d\n", cudaGetErrorString(cuda_error), cuda_error);
-			return 1;
-	}
-
-    /*INITIALZE D 1024*/
-	matrix_d.height = 1024;
-	matrix_d.width = 1024;
-	matrix_d.h_rows = (float*)aligned_alloc(32,matrix_d.height*matrix_d.width*sizeof(float));
-
-	cuda_error = cudaMalloc(&D.d_rows, D.height*D.width*sizeof(float));
-	if (cuda_error != cudaSuccess) {
-		printf("Erro %s: malloc matrix D - codigo: %d\n", cudaGetErrorString(cuda_error), cuda_error);
-			return 1;
-	}
-
-    /*INITIALIZE E 1024*/
-	matrix_e.height = 1024;
-	matrix_e.width = 1024;
-	matrix_e.h_rows = (float*)aligned_alloc(32,matrix_e.height*matrix_w.width*sizeof(float));
-
-	cuda_error = cudaMalloc(&matrix_e.d_rows, matrix_e.height*matrix_e.width*sizeof(float));
-	if (cuda_error != cudaSuccess) {
-		printf("Errr %s: malloc matrix E - codigo: %d\n", cudaGetErrorString(cuda_error), cuda_error);
 			return 1;
 	}
 	
@@ -251,54 +226,23 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 			return 1;
 	}
 
-    printf(" MMatrix C  - Erros na matrix mult ");
+    printf(" Matrix C  - Erros na matrix mult ");
   	check_errors(&matrix_c, 640.0f);
     printf("\n")
     fill_file_with_matrix(matrix_c,second_result);
 
 
-    /*FILL D - LARGER MATRIX 1024*/
-	
-    fill_matrix_with_value(&matrix_d, 3);
-    cuda_error = cudaMemcpy(matrix_d.d_rows, matrix_d.h_rows, matrix_d.height*matrix_d.width*sizeof(float), cudaMemcpyHostToDevice);
 
-	if (cuda_error != cudaSuccess) {
-		printf("Erro %s: cudaMemcpy Matrix D - codigo %d - linha %d \n", cudaGetErrorString(cuda_error), cuda_error, __LINE__);
-			return 1;
-	}
-    
-    /*FILL E - LARGER MATRIX 1024*/
-	fill_matrix_with_value(&matrix_e, 3);
-
-
-    /*MATRIX MULT LARGER MATRIX */
-	gettimeofday(&start, NULL);
-	matrix_matrix_mult(&matrix_d, &matrix_d, &matrix_e);
-	gettimeofday(&stop, NULL);
-    printf("\n Time difference of multiplicaton of Matrix D and Matrix D: %f ms\n",timedifference_msec(start, stop));
-    cuda_error = cudaMemcpy(matrix_e.d_rows, matrix_e.h_rows, matrix_e.height*matrix_e.width*sizeof(float), cudaMemcpyHostToDevice);
-	if (cuda_error != cudaSuccess) {
-		printf("Erro %s: cudaMemcpy Matrix E - codigo %d - linha %d \n", cudaGetErrorString(cuda_error), cuda_error, __LINE__);
-			return 1;
-	}
-
-	printf(" Matrix E  - Erros na matrix mult ");
-  	check_errors(&matrix_e, 9216.0f);
-    print("\n");
 
 
     free(matrix_a.h_rows);
 	free(matrix_b.h_rows);
 	free(matrix_c.h_rows);
-    free(matrix_d.h_rows);
-	free(matrix_e.h_rows);
+
 
 	cudaFree(matrix_a.d_rows);
 	cudaFree(matrix_b.d_rows);
 	cudaFree(matrix_c.d_rows);
-	cudaFree(matrix_d.d_rows);
-	cudaFree(matrix_e.d_rows);
-
 
    	gettimeofday(&stopOverall, NULL);
 	printf("Overall time: %f ms\n", timedifference_msec(startOverall, stopOverall));
