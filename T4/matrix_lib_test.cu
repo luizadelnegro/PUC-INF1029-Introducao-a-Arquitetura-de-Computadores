@@ -146,19 +146,18 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 	matrix_a.height=lines_for_a;
 	matrix_a.width=columns_for_a;
 	matrix_a.h_rows = (float*)aligned_alloc(32,matrix_a.height*matrix_a.width*sizeof(float));
-
 	cuda_error = cudaMalloc(&matrix_a.d_rows, matrix_a.height*matrix_a.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix A - codigo %d\n", cudaGetErrorString(cuda_error), cuda_error);
 			return 1;
 	}
 
-    fill_matrix_with_file(matrix_a,matrix_a_file)
+    fill_matrix_with_file(matrix_a,matrix_a_file);
 
     cuda_error = cudaMemcpy(matrix_a.d_rows, matrix_a.h_rows, matrix_a.height*matrix_a.width*sizeof(float), cudaMemcpyHostToDevice);
 
 	if (cuda_error != cudaSuccess) {
-		printf("Erro %s: cudaMemcpy matrix A  - codigo %d - linha %d \n", cudaGetErrorString(cuda_error), cudaError, __LINE__);
+		printf("Erro %s: cudaMemcpy matrix A  - codigo %d - linha %d \n", cudaGetErrorString(cuda_error), cuda_error, __LINE__);
 			return 1;
 	}
 
@@ -173,7 +172,7 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 			return 1;
 	}
 
-    fill_matrix_with_file(matrix_b,matrix_b_file)
+    fill_matrix_with_file(matrix_b,matrix_b_file);
 
 	cuda_error = cudaMemcpy(matrix_b.d_rows, matrix_b.h_rows, matrix_b.height*matrix_b.width*sizeof(float), cudaMemcpyHostToDevice);
 
@@ -186,7 +185,7 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 	matrix_c.height = lines_for_a;
 	matrix_c.width = columns_for_b; 
 	matrix_c.h_rows = (float*)aligned_alloc(32,matrix_c.height*matrix_c.width*sizeof(float));
-
+    fill_matrix_with_value(matrix_c,0);
 	cuda_error = cudaMalloc(&matrix_c.d_rows, matrix_c.height*matrix_c.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix C - codigo: %d\n", cudaGetErrorString(cuda_error), cuda_error);
