@@ -4,11 +4,11 @@
 #include <math.h>
 #include <string.h>
 #include <errno.h>
+#include "matrix_lib.h"
 #include <cuda_runtime.h>
 extern "C" {
   #include "timer.h"
 }
-#include "matrix_lib.h"
 
 
 /*PARTE 2*/
@@ -20,8 +20,8 @@ void fill_file_with_matrix(Matrix matrix, char *filename){
         exit (1); 
     }
 	
-    fwrite (&matrix.width, sizeof(unsigned long int), 1, file);
-	fwrite (&matrix.height, sizeof(unsigned long int), 1, file);
+    //fwrite (&matrix.width, sizeof(unsigned long int), 1, file);
+	//fwrite (&matrix.height, sizeof(unsigned long int), 1, file);
 
 	for(int i=0;i<matrix.height; i++){
 		for(int j=0; j<matrix.width; j++){
@@ -32,7 +32,7 @@ void fill_file_with_matrix(Matrix matrix, char *filename){
    	fclose(file);
 }
 
-void fill_matrix_with_file(Matrix matrix, char *filename){
+void fill_matrix_with_file(Matrix *matrix, char *filename){
 	FILE *file;
 	file = fopen (filename, "rb"); 
  	if (file == NULL) { 
@@ -40,19 +40,32 @@ void fill_matrix_with_file(Matrix matrix, char *filename){
 
         exit (1); 
     }
-
+	unsigned long int h,w;
+	fread(&w, sizeof(unsigned long int), 1, file);
+    fread(&h, sizeof(unsigned long int), 1, file);
+	/*unsigned long int h,w;
     fread(&matrix.width, sizeof(unsigned long int), 1, file);
     fread(&matrix.height, sizeof(unsigned long int), 1, file);
     for(int i=0;i<matrix.height; i++){
 		for(int j=0; j<matrix.width; j++){
 			fread (&matrix.h_rows[i*matrix.width + j], sizeof(float), 1, file);
 		}
+	}*/
+	int count=0;
+	float * vet = (float*) malloc((matrix->height * matrix->width) * sizeof(float));
+	float vet_aux;
+	for(int i = 0; i < matrix->height * matrix->width; i++){
+		fread((void*) (&vet_aux), sizeof(vet_aux), 1, file);
+		vet[count] = vet_aux;
+		count++;
 	}
+  	matrix->h_rows = vet;
+
 	fclose(file);
 
 }
 
-void fill_matrix_with_value(Matrix matrix, float value){
+void fill_matrix_with_value(Matrix * matrix, float value){
 	unsigned long int h = matrix->height;
     unsigned long int w = matrix->width;
 	for(int i=0;i<h*w; i++){
@@ -66,11 +79,11 @@ int check_errors(Matrix *matrix, float scalar_value) {
     unsigned long int num_elements_matrix = matrix->height * matrix->width;
   /* Check the integrity of the matrix */
     if (num_elements_matrix == 0){
-        print("Erro: matriz sem dimensoes \n")
+        //print("Erro: matriz sem dimensoes \n");
         return 0;
     }
     if(matrix->h_rows == NULL) {
-        print("Erro: matrix Null\n")
+        //print("Erro: matrix Null\n");
         return 0;
     }
     float max_error_value = 0.0f;
@@ -83,20 +96,14 @@ int check_errors(Matrix *matrix, float scalar_value) {
 }
 
 void show_matrix(Matrix matrix){
-
-	unsigned long int mH = matrix.height;
-	unsigned long int mW = matrix.width;
-
 	printf("[ ");
-	for(int i=0;i<mH; i++){
-		for(int j=0; j<mW; j++){
-			printf(" %.1f ",matrix.rows[i*mW + j]);
+	for(int i=0;i<matrix.height; i++){
+		for(int j=0; j<matrix.width; j++){
+			printf(" %.1f ",matrix.h_rows[i*matrix.width + j]);
 		}
 		printf("\n");
 	}
 	printf("]\n");
-
-
 }
 
 int main(int argc, char *argv[]){
@@ -130,7 +137,7 @@ int main(int argc, char *argv[]){
 
 
     /*SET GRID SIZE FUNCTION*/
-	set_grid_size(num_threads, max_blocks);
+	set_grid_size(n_threads, max_blocks);
 	
 
     /*DECLARE MATRIX*/
@@ -152,7 +159,7 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 			return 1;
 	}
 
-    fill_matrix_with_file(matrix_a,matrix_a_file);
+    fill_matrix_with_file(&matrix_a,matrix_a_file);
 
     cuda_error = cudaMemcpy(matrix_a.d_rows, matrix_a.h_rows, matrix_a.height*matrix_a.width*sizeof(float), cudaMemcpyHostToDevice);
 
@@ -160,38 +167,39 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 		printf("Erro %s: cudaMemcpy matrix A  - codigo %d - linha %d \n", cudaGetErrorString(cuda_error), cuda_error, __LINE__);
 			return 1;
 	}
-
+	 
+	//show_matrix(matrix_a);
 
     /*INITIALIZE B*/
 	matrix_b.height = lines_for_b;
 	matrix_b.width = columns_for_b;
 	matrix_b.h_rows = (float*)aligned_alloc(32,matrix_b.height*matrix_b.width*sizeof(float));
-	cuda_error = cudaMalloc(&B.d_rows, B.height*B.width*sizeof(float));
+	cuda_error = cudaMalloc(&matrix_b.d_rows, matrix_b.height*matrix_b.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix B - codigo %d\n", cudaGetErrorString(cuda_error), cuda_error);
 			return 1;
 	}
 
-    fill_matrix_with_file(matrix_b,matrix_b_file);
+    fill_matrix_with_file(&matrix_b,matrix_b_file);
 
 	cuda_error = cudaMemcpy(matrix_b.d_rows, matrix_b.h_rows, matrix_b.height*matrix_b.width*sizeof(float), cudaMemcpyHostToDevice);
 
 	if (cuda_error != cudaSuccess) {
-		printf("Erro %s: cudaMemcpy matrix B - codigo %d - linha %d\n", cudaGetErrorString(cudaError), cudaError, __LINE__);
+		printf("Erro %s: cudaMemcpy matrix B - codigo %d - linha %d\n", cudaGetErrorString(cuda_error), cuda_error, __LINE__);
 			return 1;
 	}
-
+//	show_matrix(matrix_b);
     /*INITIALZE C */
 	matrix_c.height = lines_for_a;
 	matrix_c.width = columns_for_b; 
 	matrix_c.h_rows = (float*)aligned_alloc(32,matrix_c.height*matrix_c.width*sizeof(float));
-    fill_matrix_with_value(matrix_c,0);
+    fill_matrix_with_value(&matrix_c,0);
 	cuda_error = cudaMalloc(&matrix_c.d_rows, matrix_c.height*matrix_c.width*sizeof(float));
 	if (cuda_error != cudaSuccess) {
 		printf("Erro %s: malloc matrix C - codigo: %d\n", cudaGetErrorString(cuda_error), cuda_error);
 			return 1;
 	}
-	
+//	show_matrix(matrix_c);
 
     /*SCALAR MULT OF A*/
 	gettimeofday(&start, NULL);
@@ -205,10 +213,10 @@ programa principal deve emitir uma notificação de erro de alocação de memór
     printf("\n Time difference of scalar multiplicaton of Matrix A: %f ms\n",timedifference_msec(start, stop));
 	printf(" Erros na scalar mult: ");
   	check_errors(&matrix_a, 20.0f);
-    printf("\n")
-    fill_file_with_matrix(matrix_a,first_result)
+    printf("\n");
+    fill_file_with_matrix(matrix_a,first_result);
 
-    show_matrix(&first_result)
+    //show_matrix(matrix_a);
 
 
 
@@ -227,10 +235,10 @@ programa principal deve emitir uma notificação de erro de alocação de memór
 
     printf(" Matrix C  - Erros na matrix mult ");
   	check_errors(&matrix_c, 640.0f);
-    printf("\n")
+    printf("\n");
     fill_file_with_matrix(matrix_c,second_result);
 
-
+	//show_matrix(matrix_c);
 
 
 

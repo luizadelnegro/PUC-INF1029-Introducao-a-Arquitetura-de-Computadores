@@ -2,6 +2,17 @@ Trabalho 3 - INF1029
 Aluna: Luiza Del Negro Ciuffo Fernandes
 Matricula: 1721251
 
+- Resultados de tempo do T4 para matriz 8x16
+
+ Time difference of scalar multiplicaton of Matrix A: 0.042000 ms
+ Erros na scalar mult: Quantidade de erros =   0.000000
+
+
+ Time difference of multiplicaton of Matrix A and Matrix B: 0.052000 ms
+ Matrix C  - Erros na matrix mult Quantidade de erros =   0.000000
+
+Overall time: 2025.322021 ms
+
 - Resultados de tempo do T3 para matriz 8x16
 
  Time difference of scalar multiplicaton of Matrix A: 0.006000 ms
@@ -34,6 +45,15 @@ Overall time: 1.009000 ms
 
  Time difference of the optimized multiplicaton of Matrix A and Matrix B: 0.013000 ms
 Overall time: 3.245000 ms
+
+
+- Resultados de tempo do T4 para matriz 1024x1024
+ Time difference of scalar multiplicaton of Matrix A: 0.127000 ms
+ Erros na scalar mult: Quantidade de erros =   0.000000
+
+
+ Time difference of multiplicaton of Matrix A and Matrix B: 0.024000 ms
+ Matrix C  - Erros na matrix mult Quantidade de erros =   40320.000000
 
 
 

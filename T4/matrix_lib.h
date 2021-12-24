@@ -11,6 +11,8 @@ typedef struct matrix{
 	float *d_rows;
 } Matrix;
 
+void show_matrix(Matrix *matrix);
+
 int scalar_matrix_mult(float scalar_value, Matrix *matrix);
 
 int matrix_matrix_mult(Matrix *ma, Matrix *mb, Matrix *mc);
